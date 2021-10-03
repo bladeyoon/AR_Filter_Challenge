@@ -4,11 +4,22 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/TikTok-Face.unity
+    guid: a2bbda92b7abb0b418f19b01a22b3e9e
+  - enabled: 0
+    path: Assets/GameVoiceControl/Demo/EngSpeechRecognition.unity
+    guid: bfa185398d8214c47a524fd437722610
+  - enabled: 1
+    path: Assets/Scenes/Facemask 1.unity
+    guid: c27860f0a5d3edb4088aa8ef49324ea6
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 8df36740f78413747b80fb5a60c0f0c2,
       type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 55d604c729e466840bc7a109671e79ba,
       type: 2}
+    com.unity.mars-ar-foundation-providers.xr_subsystem_settings: {fileID: 11400000,
+      guid: 58bd980186b8a774fa8486fb64030122, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 0dd3d2a817d654e4292a0ec600101955,
       type: 2}
