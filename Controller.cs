@@ -53,6 +53,7 @@ public class Controller : MonoBehaviour
         ShowMouthQuestion();
     }
 
+
     enum Around 
     {
         face,
@@ -68,12 +69,11 @@ public class Controller : MonoBehaviour
     {
         switch ( TurnOn ) 
         {
-            case Around.face:
-                Debug.Log("Null.");
-                //ShowFaceAnswer();
-                break;
             case Around.ear:
                 ShowEarAnswer();
+                break;
+            case Around.face:
+                Debug.Log("Do nothing");
                 break;
             case Around.eye:
                 ShowEyesAnswer();
@@ -99,7 +99,9 @@ public class Controller : MonoBehaviour
             TurnOn = Around.ear;
         if ( result.Contains(CmdHowToSayFace) )
             TurnOn = Around.face;
+        }
     }
+
 
     public void ShowMouthQuestion()
     {
@@ -111,21 +113,22 @@ public class Controller : MonoBehaviour
     public void ShowMouthAnswer()
     {
         StartCoroutine(ShowMouthInChinese());
+        ShowNoseQuestion();
     }
 
     IEnumerator ShowMouthInChinese()
     {
-        Destroy(_humanMouthTop);
-        Destroy(_humanMouthBottom);
+        _humanMouthTop.SetActive(false);
+        _humanMouthBottom.SetActive(false);
         yield return new WaitForSeconds(0.5f);
         _mouthChinese.SetActive(true);
         //add pronounciation audio
         yield return new WaitForSeconds(3f);
+        //_mouthChinese.SetActive(false);
         Destroy(_mouthChinese);
         _pandaMouth.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        ShowNoseQuestion();
     }
+
 
     public void ShowNoseQuestion()
     {
@@ -136,20 +139,21 @@ public class Controller : MonoBehaviour
     public void ShowNoseAnswer()
     {
         StartCoroutine(ShowNoseInChinese());
+        ShowEyesQuestion();
     }
 
     IEnumerator ShowNoseInChinese()
     {
-        Destroy(_humanNose);
+        _humanNose.SetActive(false);
         yield return new WaitForSeconds(0.5f);
         _noseChinese.SetActive(true);
         //add pronounciation audio
         yield return new WaitForSeconds(3f);
+        //_noseChinese.SetActive(false);
         Destroy(_noseChinese);
         _pandaNose.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        ShowEyesQuestion();
     }
+
 
     public void ShowEyesQuestion()
     {
@@ -161,21 +165,22 @@ public class Controller : MonoBehaviour
     public void ShowEyesAnswer()
     {
         StartCoroutine(ShowEyesInChinese());
+        ShowEarsQuestion();
     }
 
     IEnumerator ShowEyesInChinese()
     {
-        Destroy(_humanEarLeft);
-        Destroy(_humanEarRight);
+        _humanEyeLeft.SetActive(false);
+        _humanEyeRight.SetActive(false);
         yield return new WaitForSeconds(0.5f);
         _eyeChinese.SetActive(true);
         //add pronounciation audio
         yield return new WaitForSeconds(3f);
+        //_eyeChinese.SetActive(false);
         Destroy(_eyeChinese);
         _pandaEye.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        ShowEarsQuestion();
     }
+
 
     public void ShowEarsQuestion()
     {
@@ -187,30 +192,42 @@ public class Controller : MonoBehaviour
     public void ShowEarAnswer()
     {
         StartCoroutine(ShowEarsInChinese());
+        ShowFaceQuestion();
     }
 
     IEnumerator ShowEarsInChinese()
     {
-        Destroy(_humanEarLeft);
-        Destroy(_humanEarRight);
+        _humanEarRight.SetActive(false);
+        _humanEarLeft.SetActive(false);
         yield return new WaitForSeconds(0.5f);
         _earChinese.SetActive(true);
         //add pronounciation audio
         yield return new WaitForSeconds(3f);
+        //_earChinese.SetActive(false);
         Destroy(_earChinese);
         _pandaEar.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        ShowFullFace();
     }
 
-    public void ShowFullFace()
+
+    public void ShowFaceQuestion()
     {
-        StartCoroutine(ShowFullFaceSequence());
+        _questionText.text = "WHAT IS FACE IN CHINESE?";
+        // hightlight human face
     }
 
-    IEnumerator ShowFullFaceSequence()
+    public void ShowFaceAnswer()
     {
-        yield return new WaitForSeconds(1f);
+        StartCoroutine(ShowFaceInChinese());
+    }
+
+    IEnumerator ShowFaceInChinese()
+    {
+        //turn off human face
+        yield return new WaitForSeconds(0.5f);
+        //turn on Face in Chinese
+        //add pronounciation audio
+        yield return new WaitForSeconds(3f);
+        //turn off Face in Chinese
     }
 }
 
