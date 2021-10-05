@@ -41,7 +41,7 @@ public class GameVoiceControl : MonoBehaviour, IGetCrashMessages, IGetLogMessage
     public class InitEvent : UnityEvent<bool> { }
 
     public ResultEvent RecognitionResult = new ResultEvent( );
-    public InitEvent InitResult = new InitEvent( );
+    public InitEvent InitResult = new InitEvent();
 
     [ Header( "Log" ) ]
     public Log log = null;
@@ -65,7 +65,9 @@ public class GameVoiceControl : MonoBehaviour, IGetCrashMessages, IGetLogMessage
             }
         }
     }
-    public void onStartListening( ) {
+
+    public void onStartListening( ) 
+    {
         if ( !_start ) {
             if ( log != null )
                 log.clear( );
@@ -73,12 +75,14 @@ public class GameVoiceControl : MonoBehaviour, IGetCrashMessages, IGetLogMessage
             _start = true;
         }
     }
+    
     public void onStopListening( ) {
         if ( _start ) {
             _speechRecognizer.stopListening( );
             _start = false;
         }
     }
+    
     public void getCrashMessages( string message ) {
         if ( log != null ) {
             log.add( "<color=red>crash:" + message + "</color>" );

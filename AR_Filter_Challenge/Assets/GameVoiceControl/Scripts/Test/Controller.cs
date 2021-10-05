@@ -1,17 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
 
-public class Controller : MonoBehaviour 
+public class Controller : Singleton<Controller> 
 {
     [Header("PandaFaceElements")]
     public GameObject _pandaNose;
     public GameObject _pandaEye;
     public GameObject _pandaMouth;
     public GameObject _pandaEar;
-    //public GameObject _pandaFace;
+    public GameObject _pandaComplete;
     public GameObject _pandaHalogram;
 
     [Header("HumanFaceElements")]
@@ -29,17 +31,24 @@ public class Controller : MonoBehaviour
     public GameObject _mouthChinese;
     public GameObject _eyeChinese;
 
-
     [Header("UI")]
     public TextMeshProUGUI _questionText;
+    public GameObject _askMeText;
+    public GameObject _pandaIcon;
+    public GameObject _quoteText;
+    public GameObject _wellDoneText;
 
+    [Header("VFX")]
+    public GameObject _ConfettiRain;
 
     [Header("Command")]
-    public string CmdHowToSayNose = "what is nose in chinese";
-    public string CmdHowToSayEye = "what is eye in chinese";
-    public string CmdHowToSayMouth = "what is mouth in chinese";
-    public string CmdHowToSayEar = "what is ear in chinese";
-    public string CmdHowToSayFace = "what is face in chinese";
+    public string CmdHowToSayNose = "nose in chinese";
+    public string CmdHowToSayEye = "eye in chinese";
+    public string CmdHowToSayMouth = "mouth in chinese";
+    public string CmdHowToSayEar = "ear in chinese";
+    public string CmdHowToSayFace = "face in chinese";
+
+    private bool _isAudioPlaying = true;
 
     void Start ( ) 
     {
@@ -48,9 +57,8 @@ public class Controller : MonoBehaviour
         _pandaEar.SetActive(false);
         _pandaMouth.SetActive(false);
         _pandaEye.SetActive(false);
-        //_pandaFace.SetActive(false);
-
-        ShowMouthQuestion();
+        _pandaComplete.SetActive(false);
+        _questionText.text = "";
     }
 
     enum Around 
@@ -103,7 +111,10 @@ public class Controller : MonoBehaviour
 
     public void ShowMouthQuestion()
     {
-        _questionText.text = "WHAT IS MOUTH IN CHINESE?";
+        _pandaIcon.SetActive(true);
+        _askMeText.SetActive(true);
+        _quoteText.SetActive(true);
+        _questionText.text = "MOUTH IN CHINESE?";
         _humanMouthTop.SetActive(true);
         _humanMouthBottom.SetActive(true);
     }
@@ -115,21 +126,23 @@ public class Controller : MonoBehaviour
 
     IEnumerator ShowMouthInChinese()
     {
+        _askMeText.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        AudioMouth.Instance.playMouthAudio();
+        _mouthChinese.SetActive(true);
+        yield return new WaitForSeconds(5f);
+        Destroy(_mouthChinese);
         Destroy(_humanMouthTop);
         Destroy(_humanMouthBottom);
         yield return new WaitForSeconds(0.5f);
-        _mouthChinese.SetActive(true);
-        //add pronounciation audio
-        yield return new WaitForSeconds(3f);
-        Destroy(_mouthChinese);
         _pandaMouth.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        ShowNoseQuestion();
+        ShowEyesQuestion();
     }
 
     public void ShowNoseQuestion()
     {
-        _questionText.text = "WHAT IS NOSE IN CHINESE?";
+        _askMeText.SetActive(true);
+        _questionText.text = "NOSE IN CHINESE?";
         _humanNose.SetActive(true);
     }
 
@@ -140,22 +153,24 @@ public class Controller : MonoBehaviour
 
     IEnumerator ShowNoseInChinese()
     {
+        _askMeText.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        AudioNose.Instance.playNoseAudio();
+        _noseChinese.SetActive(true);
+        yield return new WaitForSeconds(5f);
+        Destroy(_noseChinese);
         Destroy(_humanNose);
         yield return new WaitForSeconds(0.5f);
-        _noseChinese.SetActive(true);
-        //add pronounciation audio
-        yield return new WaitForSeconds(3f);
-        Destroy(_noseChinese);
         _pandaNose.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        ShowEyesQuestion();
+        ShowEarsQuestion();
     }
 
     public void ShowEyesQuestion()
     {
-        _questionText.text = "WHAT IS EYE IN CHINESE?";
-        _humanEyeRight.SetActive(true);
+        _askMeText.SetActive(true);
+        _questionText.text = "EYE IN CHINESE?";
         _humanEyeLeft.SetActive(true);
+        _humanEyeRight.SetActive(true);
     }
 
     public void ShowEyesAnswer()
@@ -165,21 +180,27 @@ public class Controller : MonoBehaviour
 
     IEnumerator ShowEyesInChinese()
     {
-        Destroy(_humanEarLeft);
-        Destroy(_humanEarRight);
+        _askMeText.SetActive(false);
+        _isAudioPlaying = false;
         yield return new WaitForSeconds(0.5f);
+        if (_isAudioPlaying == false)
+        {
+            AudioEyes.Instance.playEyesAudio();
+        }
         _eyeChinese.SetActive(true);
-        //add pronounciation audio
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         Destroy(_eyeChinese);
+        Destroy(_humanEyeLeft);
+        Destroy(_humanEyeRight);
+        yield return new WaitForSeconds(0.5f);
         _pandaEye.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        ShowEarsQuestion();
+        ShowNoseQuestion();
     }
 
     public void ShowEarsQuestion()
     {
-        _questionText.text = "WHAT IS EAR IN CHINESE?";
+        _askMeText.SetActive(true);
+        _questionText.text = "EAR IN CHINESE?";
         _humanEarRight.SetActive(true);
         _humanEarLeft.SetActive(true);
     }
@@ -191,15 +212,18 @@ public class Controller : MonoBehaviour
 
     IEnumerator ShowEarsInChinese()
     {
+        Destroy(_questionText);
+        Destroy(_quoteText);
+        _askMeText.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        AudioEar.Instance.playEarAudio();
+        _earChinese.SetActive(true);
+        yield return new WaitForSeconds(5f);
+        Destroy(_earChinese);
         Destroy(_humanEarLeft);
         Destroy(_humanEarRight);
         yield return new WaitForSeconds(0.5f);
-        _earChinese.SetActive(true);
-        //add pronounciation audio
-        yield return new WaitForSeconds(3f);
-        Destroy(_earChinese);
         _pandaEar.SetActive(true);
-        yield return new WaitForSeconds(2f);
         ShowFullFace();
     }
 
@@ -210,7 +234,19 @@ public class Controller : MonoBehaviour
 
     IEnumerator ShowFullFaceSequence()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
+        _wellDoneText.SetActive(true);
+        _pandaComplete.SetActive(true);
+        AudioApplause.Instance.playApplauseAudio();
+        _ConfettiRain.SetActive(true);
+
+        _pandaHalogram.SetActive(false);
+        _pandaEar.SetActive(false);
+        _pandaEye.SetActive(false);
+        _pandaMouth.SetActive(false);
+        _pandaNose.SetActive(false);
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
 
